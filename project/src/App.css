@@ -36,3 +36,38 @@
     transform: rotate(360deg);
   }
 }
+
+
+.text-danger{
+  color: #CE1931 !important;
+}
+
+.text-success{
+  color: #1ECC89 !important;
+}
+
+.bg-danger{
+  background: #E01B3C !important;
+}
+
+.bg-success{
+  background-color: #1ECC89 !important;
+}
+
+.btn-outline-success{
+  border-color: #1ECC89 !important;
+  color: #1ECC89 !important;
+}
+
+.btn-outline-success:hover{
+  background: none;
+}
+
+.btn-outline-danger{
+  border-color: #E01B3C;
+  color: #E01B3C !important;
+}
+
+.btn-outline-danger:hover{
+  background: none;
+}
