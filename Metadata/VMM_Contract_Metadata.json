@@ -1,0 +1,23 @@
+{
+    "name": "Virtual AMM",
+    "author": "@zenith",
+    "source": {
+    "tools": [
+    "smartpy",
+    "taquito",
+    "reactjs",
+    "temple wallet"
+    ]
+    },
+    "license": {
+    "name": "MIT",
+    "details": "The MIT License"
+    },
+    "version": "1.0",
+    "interfaces": [
+    "TZIP-012",
+    "TZIP-016"
+    ],
+    "description": "virtual AMM",
+    "tokenCategory": "defi"
+}

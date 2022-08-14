@@ -1,10 +1,34 @@
 import React, { useState } from 'react'
 import TradeChart from './TradeChart'
+import Box from '@mui/material/Box';
+import Button from '@mui/material/Button';
+import Typography from '@mui/material/Typography';
+import Modal from '@mui/material/Modal';
+import TextField from '@mui/material/TextField';
+import { Slider } from '@mui/material';
+
+const style = {
+  position: 'absolute',
+  top: '50%',
+  left: '50%',
+  transform: 'translate(-50%, -50%)',
+  width: "30%",
+  bgcolor: 'black',
+  border: '2px solid #000',
+  // boxShadow: 24,
+  p: 4,
+  '& > :not(style)': { m: 1, width: '25ch' },
+  boxShadow: '0 0 0 1px white'
+};
 
 const Trade = (props) => {
-
+  const [open, setOpen] = useState(false);
+  const handleOpen = () => setOpen(true);
+  const handleClose = () => setOpen(false);
   const [longOrShort, setLongOrShort] = useState('long')
   const {coinSelect, setCoinSelect} = props
+  const [rangeValue, setRangeValue] = useState('1')
+  const [isLong, setIsLong] = useState(false)
 
   const order_history_data = [
     {
@@ -365,6 +389,10 @@ const Trade = (props) => {
       action : 'withdraw' 
     },
   ]
+  const onChangeRange = (e) => {
+		setRangeValue(e.target.value)
+	}
+
 
   return (
     <div>
@@ -406,8 +434,12 @@ const Trade = (props) => {
       <div className="long-short-enclosure">
         <h5>By adding short position, you can earn 49.056% APR</h5>
         <div className="long-short-btns mt-4">
-          <button className={`mx-3 btn btn-outline-white ${longOrShort==='long'?'bg-success':'btn-outline-success'} `} onClick={()=>{setLongOrShort('long')}} >Long</button>
-          <button className={`mx-3 btn btn-outline-white ${longOrShort==='short'?'bg-danger':'btn-outline-danger'} `} onClick={()=>{setLongOrShort('short')}} >Short</button>
+          <button className={`mx-3 btn btn-outline-white ${longOrShort==='long'?'bg-success':'btn-outline-success'} `} onClick={()=>{setLongOrShort('long')
+          setIsLong(true)
+          handleOpen()}} >Long</button>
+          <button className={`mx-3 btn btn-outline-white ${longOrShort==='short'?'bg-danger':'btn-outline-danger'} `} onClick={()=>{setLongOrShort('short')
+          setIsLong(false)
+          handleOpen()}} >Short</button>
         </div>
       </div>
 
@@ -446,7 +478,99 @@ const Trade = (props) => {
 
       </div>
 
-
+      {isLong ? <Modal
+        open={open}
+        onClose={handleClose}
+        aria-labelledby="modal-modal-title"
+        aria-describedby="modal-modal-description"
+      >
+        <Box sx={style} component="form" noValidate autoComplete="off">
+          <Typography id="modal-modal-title" variant="h4" component="h2" style={{width: '100%'}}>
+            Long
+          </Typography>
+          <input id="outlined-basic" placeholder="vUSD Amount" variant="outlined" focused style={{width: '100%', color: 'white', backgroundColor: 'black', border:'1px solid white', borderRadius: '2%', padding: '10px', marginBottom:"20px"}}/> <br/>
+          Leverage <br/>
+          <Slider
+              aria-label="Temperature"
+              defaultValue={1}
+              // getAriaValueText={valuetext}
+              // valueLabelDisplay="auto" 
+              value={rangeValue}
+              onChange={onChangeRange}
+              color={'primary'}
+              sx={{color:`grey`}}
+              step={1}
+              marks
+              min={1}
+              max={3}
+             style={{width: '90%'}}/> {rangeValue} x <br/>
+             <table style = {{width:"100%"}}>
+              <tr style = {{width:"100%"}}>
+                <td style = {{width:"70%"}}>Amount</td>
+                <td style = {{width:"30%"}}>0 vUSD</td>
+              </tr>
+              <tr style = {{width:"100%"}}>
+                <td style = {{width:"70%"}}>Commission</td>
+                <td style = {{width:"30%"}}>0 vUSD</td>
+              </tr>
+              <tr style = {{width:"100%"}}>
+                <td style = {{width:"70%"}}>Price impact</td>
+                <td style = {{width:"30%"}}>0%</td>
+              </tr>
+              <tr style = {{width:"100%"}}>
+                <td style = {{width:"70%"}}>Slippage tolerance</td>
+                <td style = {{width:"30%"}}>2%</td>
+              </tr>
+             </table>
+            <Button style={{align: 'center', width: '100%', marginTop:"20px"}}variant="contained" color="success">Go Long</Button>
+        </Box>
+      </Modal> : <Modal
+        open={open}
+        onClose={handleClose}
+        aria-labelledby="modal-modal-title"
+        aria-describedby="modal-modal-description"
+      >
+        <Box sx={style} component="form" noValidate autoComplete="off">
+          <Typography id="modal-modal-title" variant="h4" component="h2" style={{width: '100%'}}>
+            Short
+          </Typography>
+          <input id="outlined-basic" placeholder="vUSD Amount" variant="outlined" focused style={{width: '100%', color: 'white', backgroundColor: 'black', border:'1px solid white', borderRadius: '2%', padding: '10px', marginBottom:"20px"}}/> <br/>
+          Leverage <br/>
+          <Slider
+              aria-label="Temperature"
+              defaultValue={1}
+              // getAriaValueText={valuetext}
+              // valueLabelDisplay="auto" 
+              value={rangeValue}
+              onChange={onChangeRange}
+              color={'primary'}
+              sx={{color:`grey`}}
+              step={1}
+              marks
+              min={1}
+              max={3}
+             style={{width: '90%'}}/> {rangeValue} x <br/>
+             <table style = {{width:"100%"}}>
+              <tr style = {{width:"100%"}}>
+                <td style = {{width:"70%"}}>Amount</td>
+                <td style = {{width:"30%"}}>0 vUSD</td>
+              </tr>
+              <tr style = {{width:"100%"}}>
+                <td style = {{width:"70%"}}>Commission</td>
+                <td style = {{width:"30%"}}>0 vUSD</td>
+              </tr>
+              <tr style = {{width:"100%"}}>
+                <td style = {{width:"70%"}}>Price impact</td>
+                <td style = {{width:"30%"}}>0%</td>
+              </tr>
+              <tr style = {{width:"100%"}}>
+                <td style = {{width:"70%"}}>Slippage tolerance</td>
+                <td style = {{width:"30%"}}>2%</td>
+              </tr>
+             </table>
+            <Button style={{align: 'center', width: '100%', marginTop:"20px"}}variant="contained" color="error">Go Short</Button>
+        </Box>
+      </Modal>}
     </div>
   )
 }

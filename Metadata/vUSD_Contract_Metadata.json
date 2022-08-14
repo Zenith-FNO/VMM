@@ -1,0 +1,24 @@
+{
+    "name": "virtual USD",
+    "author": "@zenith",
+    "source": {
+    "tools": [
+    "smartpy",
+    "taquito",
+    "reactjs",
+    "temple wallet"
+    ]
+    },
+    "license": {
+    "name": "MIT",
+    "details": "The MIT License"
+    },
+    "version": "1.0",
+    "homepage": "gamegeeks.online <gamegeeks.online>",
+    "interfaces": [
+    "TZIP-012",
+    "TZIP-016"
+    ],
+    "description": "virtual USD FA 1.2 Token",
+    "tokenCategory": "defi"
+    }

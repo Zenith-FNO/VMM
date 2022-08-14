@@ -48,7 +48,7 @@ const Stake = () => {
             <input type="text" className='x-auto px-3' placeholder='XTZ' name="staking" id="staking-input" />
             <button className='staking-btn'>0.00</button>
           </div>
-          <p className="text-danger text-start">Insufficient XTZ balance</p>
+          {/* <p className="text-danger text-start">Insufficient XTZ balance</p> */}
 
           <div className="profits">
             <div className="profit d-flex">
