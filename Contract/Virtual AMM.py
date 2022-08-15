@@ -121,7 +121,7 @@ def test():
 
     vmm = VMM(admin = admin, 
             metadata = sp.utils.metadata_of_url("ipfs://bafkreic6r6e7qc4atifm35kxdl4dtga7df6eyrqfovchka7qvedxuoujxi"), 
-            vUSD_address = vusd.address)
+            vUSD_address = sp.address("KT19mcZ91i9Uq711ghZWgk2JAtrfm8s8vxU2"))
     sc.h1("Code")   
     sc += vmm
 
