@@ -28,7 +28,16 @@ class VMM(sp.Contract):
                                     vUSD_Amount  = sp.TNat,
                                     Invariant    = sp.TNat
                                 )),
-            positions     = sp.list([], t = sp.TString),
+            longPositions = sp.map(tkey = sp.TPair(sp.TAddress, sp.TString),
+                                    tvalue = sp.TRecord(
+                                        token_amount = sp.TNat,
+                                        vUSD_Amount  = sp.TNat
+                                    )),
+            shortPositions = sp.map(tkey = sp.TPair(sp.TAddress, sp.TString),
+                                    tvalue = sp.TRecord(
+                                        token_amount = sp.TNat,
+                                        vUSD_Amount  = sp.TNat
+                                    )),
             vUSD_contract_address = vUSD_address
         )
     
@@ -38,12 +47,7 @@ class VMM(sp.Contract):
     def _vmmExists(self, vmm_name):
         sp.verify(~self.data.vmm_state.contains(vmm_name), self.error.vmmExists())
 
-    def calculateVusdAmount(self, leverage_multiple, base_value, state_name):
-        new_vUSD_Amount = sp.local("new_vUSD_Amount", (self.data.vmm_state[state_name].vUSD_Amount + (base_value * leverage_multiple)))
-        return sp.mul(self.data.vmm_state[state_name].Token_Amount, (self.data.vmm_state[state_name].vUSD_Amount))/ (new_vUSD_Amount.value)
 
-    def calculateTokenAmount(self, amount, state_name):
-        return self.data.vmm_state[state_name] + amount
 
     def transferVusdFromUser(self, amount):
         contractParams = sp.contract(sp.TRecord(from_ = sp.TAddress, to_ = sp.TAddress, value = sp.TNat), 
@@ -75,18 +79,49 @@ class VMM(sp.Contract):
         sp.set_type(base_value, sp.TNat)
         sp.set_type(state_name, sp.TString)
         self.transferVusdFromUser(sp.mul(leverage_multiple, base_value))
-        # new_Amount = sp.local("new_Amount",)
-        self.data.vmm_state[state_name].Token_Amount = self.calculateVusdAmount(leverage_multiple, base_value, state_name)
-        self.data.vmm_state[state_name].vUSD_Amount += (leverage_multiple * base_value)
+        x = sp.local('x', (self.data.vmm_state[state_name].Invariant/(self.data.vmm_state[state_name].vUSD_Amount + (sp.mul(leverage_multiple, base_value)))) - self.data.vmm_state[state_name].Token_Amount)
+        self.data.longPositions[sp.pair(sp.sender, state_name)] = sp.record(
+                                        token_amount = abs(x.value),
+                                        vUSD_Amount  = sp.mul(leverage_multiple, base_value)
+                                    )
+        self.data.vmm_state[state_name].vUSD_Amount += sp.mul(leverage_multiple, base_value)
+        self.data.vmm_state[state_name].Token_Amount = abs(self.data.vmm_state[state_name].Token_Amount - abs(x.value))
+
+    @sp.entry_point
+    def closeLong(self, state_name,):
+        sp.set_type(state_name, sp.TString)
+        x = sp.local('x', abs(self.data.vmm_state[state_name].vUSD_Amount - (self.data.vmm_state[state_name].Invariant/(self.data.vmm_state[state_name].Token_Amount + self.data.longPositions[sp.pair(sp.sender, state_name)].token_amount))))
+        self.transferVusdToUser(x.value, state_name)
+        self.data.vmm_state[state_name].vUSD_Amount = abs(self.data.vmm_state[state_name].vUSD_Amount - x.value)
+        self.data.vmm_state[state_name].Token_Amount += self.data.longPositions[sp.pair(sp.sender, state_name)].token_amount
+        del self.data.longPositions[sp.pair(sp.sender, state_name)]
+    
+    @sp.entry_point
+    def openShort(self, leverage_multiple, base_value, state_name):
+        sp.set_type(leverage_multiple, sp.TNat)
+        sp.set_type(base_value, sp.TNat)
+        sp.set_type(state_name, sp.TString)
+        self.transferVusdFromUser(sp.mul(leverage_multiple, base_value))
+        x = sp.local('x', (self.data.vmm_state[state_name].Invariant/abs((self.data.vmm_state[state_name].vUSD_Amount - (sp.mul(leverage_multiple, base_value)))) - self.data.vmm_state[state_name].Token_Amount))
+        self.data.shortPositions[sp.pair(sp.sender, state_name)] = sp.record(
+                                        token_amount = abs(x.value),
+                                        vUSD_Amount  = sp.mul(leverage_multiple, base_value)
+                                    )
+        self.data.vmm_state[state_name].vUSD_Amount = abs(self.data.vmm_state[state_name].vUSD_Amount - sp.mul(leverage_multiple, base_value))
+        self.data.vmm_state[state_name].Token_Amount += abs(x.value)
 
 
     @sp.entry_point
-    def closeLong(self, amount, state_name):
-        sp.set_type(amount, sp.TNat)
-        amount_to_send = sp.local('amount_to_send', sp.mul(self.data.vmm_state[state_name].Token_Amount, self.data.vmm_state[state_name].vUSD_Amount) / (self.data.vmm_state[state_name].Token_Amount + amount))
-        self.transferVusdToUser(amount_to_send.value, state_name)
-        self.data.vmm_state[state_name].vUSD_Amount = abs(self.data.vmm_state[state_name].vUSD_Amount - amount_to_send.value)
-        self.data.vmm_state[state_name].Token_Amount += amount
+    def closeShort(self, state_name):
+        sp.set_type(state_name, sp.TString)
+        x = sp.local('x', (self.data.vmm_state[state_name].Invariant/abs(self.data.vmm_state[state_name].Token_Amount - self.data.shortPositions[sp.pair(sp.sender, state_name)].token_amount) - self.data.vmm_state[state_name].vUSD_Amount))
+        self.transferVusdToUser(abs(x.value), state_name)
+        self.data.vmm_state[state_name].vUSD_Amount += abs(x.value)
+        self.data.vmm_state[state_name].Token_Amount = abs(self.data.vmm_state[state_name].Token_Amount - self.data.shortPositions[sp.pair(sp.sender, state_name)].token_amount)
+        del self.data.shortPositions[sp.pair(sp.sender, state_name)]
+
+
+
 
 
 @sp.add_test(name = "VMM")
@@ -140,9 +175,9 @@ def test():
 
     sc.h1("Add VMM State")
     state1 = sp.record(
-            Token_Amount = sp.nat(100 * dc),
-            vUSD_Amount  = sp.nat(400000 * dc),
-            Invariant    = sp.nat(40000000 * dc * dc)
+            Token_Amount = sp.nat(1000 * dc),
+            vUSD_Amount  = sp.nat(10000 * dc),
+            Invariant    = sp.nat(10000000 * dc * dc)
         )
     sc += vmm.addVmmState(sp.record(state_name = sp.string("ETH"), inital_state = state1)).run(sender = admin)
     sc += vmm.addVmmState(sp.record(state_name = sp.string("ETH"), inital_state = state1)).run(sender = elon, valid = False)
@@ -157,9 +192,13 @@ def test():
     # ###################
 
     sc.h1("Open Long")
-    sc += vmm.openLong(leverage_multiple = sp.nat(2), base_value = sp.nat(2000 * dc), state_name = sp.string("ETH")).run(sender = mark.address)
-    sc += vmm.openLong(leverage_multiple = sp.nat(2), base_value = sp.nat(2000 * dc), state_name = sp.string("WAVES")).run(sender = elon.address)
+    sc += vmm.openLong(leverage_multiple = sp.nat(3), base_value = sp.nat(100 * dc), state_name = sp.string("ETH")).run(sender = mark.address)
+
+    sc.h1("Open Short")
+    sc += vmm.openShort(leverage_multiple = sp.nat(5), base_value = sp.nat(200 * dc), state_name = sp.string("ETH")).run(sender = elon.address)
 
     sc.h1("Close Long")
-    sc += vmm.closeLong(amount = sp.nat(990100), state_name = sp.string("ETH")).run(sender = mark.address)
-    sc += vmm.closeLong(amount = sp.nat(480777000), state_name = sp.string("WAVES")).run(sender = elon.address)
+    sc += vmm.closeLong(sp.string("ETH")).run(sender = mark.address)
+
+    sc.h1("Close Short")
+    sc += vmm.closeShort(sp.string("ETH")).run(sender = elon.address)
