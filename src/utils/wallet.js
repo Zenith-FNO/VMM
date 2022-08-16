@@ -2,6 +2,8 @@
 import { BeaconWallet } from "@taquito/beacon-wallet";
 import {NETWORK, RPC} from './config';
 
+
+
 export const wallet = new BeaconWallet({
   name: "Zenith",
   preferredNetwork: NETWORK,
