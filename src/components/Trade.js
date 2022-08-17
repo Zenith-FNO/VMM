@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react'
-import TradeChart from './TradeChart'
+import {TradeChart} from './TradeChart'
 import Box from '@mui/material/Box';
 import Button from '@mui/material/Button';
 import Typography from '@mui/material/Typography';
@@ -9,6 +9,7 @@ import { Slider } from '@mui/material';
 import {openLong, closeLong, openShort, closeShort} from '../utils/tezos'
 import {getAccount} from '../utils/wallet';
 import axios from 'axios';
+import SnackbarUtils from '../utils/SnackbarUtils';
 
 const style = {
 	position: 'absolute',
@@ -35,6 +36,7 @@ const Trade = (props) => {
 	const [baseValue, setBaseValue] = useState()
 	const [longPositions, setLongPositions] = useState([]);
 	const [shortPositions, setShortPositions] = useState([]);
+	const [isTxn, setIsTxn] = useState(false);
 
 
 
@@ -433,26 +435,25 @@ return (
 		<div className="graph-infos d-flex text-start">
 		<div className="graph-info">
 			<div className="info-title">Market Price</div>
-			<div className="info-values text-success">22679.762 vUSD</div>
+			<div className="info-values text-success">$1.85</div>
 		</div>
 		<div className="graph-info">
 			<div className="info-title">Index Price</div>
-			<div className="info-values">21278.762 vUSD</div>
+			<div className="info-values">1.87 vUSD</div>
 		</div>
 		<div className="graph-info">
 			<div className="info-title">Long funding rate</div>
-			<div className="info-values text-danger">-0.2675%</div>
+			<div className="info-values">-</div>
 		</div>
 		<div className="graph-info">
 			<div className="info-title">Short funding rate</div>
-			<div className="info-values text-success">0.0056%</div>
+			<div className="info-values">-</div>
 		</div>
 		<div className="graph-info">
 			<div className="info-title">Next funding</div>
-			<div className="info-values">16:02</div>
+			<div className="info-values">11:34 Hrs</div>
 		</div>
 		</div>
-		{/* <TradeChart/> */}
 	</div>
 
 	<div className="long-short-enclosure">
@@ -463,7 +464,8 @@ return (
 		handleOpen()}} >Long</button>
 		<button className={`mx-3 btn btn-outline-white ${longOrShort==='short'?'bg-danger':'btn-outline-danger'} `} onClick={()=>{setLongOrShort('short')
 		setIsLong(false)
-		handleOpen()}} >Short</button>
+		handleOpen()
+		SnackbarUtils.info("Works");}} >Short</button>
 		</div>
 	</div>
 
@@ -473,8 +475,8 @@ return (
 		<ul className="txn_elements txn-head p-3">
 		<li className="txn_item list-group-item" >DIRECTION</li>
 		<li className="txn_item list-group-item" >SYMBOL</li>
-		<li className="txn_item list-group-item" >COLLATERAL</li>
 		<li className="txn_item list-group-item" >POSITION SIZE</li>
+		<li className="txn_item list-group-item" >COLLATERAL</li>
 		<li className="txn_item list-group-item" >ACTION</li>
 		</ul>
 		<ul class="historylist ">
@@ -488,10 +490,10 @@ return (
 					<ul className="txn_elements">
 						<li className="txn_item list-group-item">LONG</li>
 						<li className="txn_item list-group-item">XTZ</li>
-						<li className="txn_item list-group-item">{element.value.token_amount / 1000000}</li>
-						<li className="txn_item list-group-item">{element.value.vUSD_Amount / 1000000} XTZ</li>
+						<li className="txn_item list-group-item">{element.value.token_amount / 1000000} XTZ</li>
+						<li className="txn_item list-group-item">{element.value.vUSD_Amount / 1000000} vUSD</li>
 						<li className="txn_item list-group-item"> &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;  
-						<Button onClick={()=>{closeLong('XTZ')}}>CLOSE</Button></li>
+						<Button color="error" onClick={()=>{closeLong('XTZ')}}>CLOSE</Button></li>
 					</ul>
 					</li>
 				</>
@@ -505,10 +507,10 @@ return (
 					<ul className="txn_elements">
 					<li className="txn_item list-group-item">SHORT</li>
 						<li className="txn_item list-group-item">XTZ</li>
-						<li className="txn_item list-group-item">{element.value.token_amount / 1000000}</li>
-						<li className="txn_item list-group-item">{element.value.vUSD_Amount / 1000000} XTZ</li>
+						<li className="txn_item list-group-item">{element.value.token_amount / 1000000} XTZ</li>
+						<li className="txn_item list-group-item">{element.value.vUSD_Amount / 1000000} vUSD</li>
 						<li className="txn_item list-group-item"> &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;  
-						<Button onClick={()=>{closeShort('XTZ')}}>CLOSE</Button></li>
+						<Button color="error" onClick={()=>{closeShort('XTZ')}}>CLOSE</Button></li>
 					</ul>
 					</li>
 				</>
@@ -563,10 +565,12 @@ return (
 				<td style = {{width:"30%"}}>2%</td>
 			</tr>
 			</table>
-			<Button style={{align: 'center', width: '100%', marginTop:"20px"}}variant="contained" color="success"
-				onClick={()=>{ console.log(baseValue , rangeValue , 'XTZ');
-								openLong(baseValue , rangeValue , 'XTZ');
-				}}>Go Long</Button>
+			{isTxn ?<p>Transaction in Process ...</p>  : <Button style={{align: 'center', width: '100%', marginTop:"20px"}}variant="contained" color="success"
+				onClick={async()=>{ setIsTxn(true);
+								console.log(baseValue , rangeValue , 'XTZ');
+								await openLong(baseValue , rangeValue , 'XTZ');
+								setIsTxn(false)
+				}}>Go Long</Button>}
 		</Box>
 	</Modal> : <Modal
 		open={open}
@@ -612,10 +616,12 @@ return (
 				<td style = {{width:"30%"}}>2%</td>
 			</tr>
 			</table>
-			<Button style={{align: 'center', width: '100%', marginTop:"20px"}}variant="contained" color="error"
-				onClick={()=>{ console.log(baseValue , rangeValue , 'XTZ');
-								openShort(baseValue , rangeValue , 'XTZ');}}
-				>Go Short</Button>
+			{isTxn ? <Button style={{align: 'center', width: '100%', marginTop:"20px"}}variant="contained"  disabled>Transaction in Process ... </Button>: <Button style={{align: 'center', width: '100%', marginTop:"20px"}}variant="contained" color="success"
+				onClick={async()=>{ setIsTxn(true);
+								console.log(baseValue , rangeValue , 'XTZ');
+								await openShort(baseValue , rangeValue , 'XTZ').catch(setIsTxn(false));
+								setIsTxn(false)
+				}}>Go Short</Button>}
 		</Box>
 	</Modal>}
 	</div>
