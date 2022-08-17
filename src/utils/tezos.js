@@ -28,7 +28,7 @@ export const openLong = async (base_value, leverage_multiple, state_name) => {
     const vusd_contract = await tezos.wallet.at(vUSD_ADDRESS);
     SnackbarUtils.info("Transaction in Process");
     const batch = await tezos.wallet.batch()
-            .withContractCall(vusd_contract.methods.approve( "KT1CkJSoxa8Wm9fD2RSkfnpsEZch55jKB3Nj" , base_value * leverage_multiple * multiple * multiple))
+            .withContractCall(vusd_contract.methods.approve( "KT1CkJSoxa8Wm9fD2RSkfnpsEZch55jKB3Nj" , base_value * leverage_multiple * multiple))
             .withContractCall(vmm_contract.methods.openLong(base_value * multiple, leverage_multiple, state_name));
     SnackbarUtils.info('Sending Txn')
     const batchOp = await batch.send();
@@ -65,7 +65,7 @@ export const openShort = async (base_value, leverage_multiple, state_name) => {
     const vusd_contract = await tezos.wallet.at(vUSD_ADDRESS);
     SnackbarUtils.info('Contract Connected')
     const batch = await tezos.wallet.batch()
-            .withContractCall(vusd_contract.methods.approve( "KT1CkJSoxa8Wm9fD2RSkfnpsEZch55jKB3Nj" , base_value * leverage_multiple * multiple * multiple))
+            .withContractCall(vusd_contract.methods.approve( "KT1CkJSoxa8Wm9fD2RSkfnpsEZch55jKB3Nj" , base_value * leverage_multiple * multiple))
             .withContractCall(vmm_contract.methods.openShort(base_value * multiple, leverage_multiple, state_name));
             SnackbarUtils.info('Sending Txn')
     const batchOp = await batch.send();
