@@ -52,7 +52,7 @@ const Trade = (props) => {
 	useEffect( ()=> {
 		const interval = setInterval(() => {
 			getHistory();
-			}, 10000);
+			}, 4000);
 		return () => clearInterval(interval);
 	},[]);
 
