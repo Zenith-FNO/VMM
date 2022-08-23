@@ -1,70 +1,11 @@
-# Getting Started with Create React App
+# Zenith
+## Virtual Market Maker
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+Zenith is the first perpetual future and options exchange on the Tezos blockchain. It provides users to go long or short on perpetual of your favorite assets with up to 10x leverage in all market conditions. Zenith has non-expiry future contracts allowing traders to speculate on the price movement of an underlying asset without actual ownership of the underlying asset, by buying (long) or selling (short) the contract and also incentivizing traders with funding mechanisms. We offer 100% on-chain and non-custodial trading. Zenith uses stable coins for future trading instead of any other token pairs as it results in less exposure to the volatility of those tokens. For this, we use the advanced version of VMM instead of AMM. We also have a high-performance and peer-to-peer options trading platform. You can buy and sell options of your favorite crypto assets with low fees, deep liquidity, and accurate pricing, secured by Tezos.
 
-## Available Scripts
-
-In the project directory, you can run:
-
-### `npm start`
-
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in your browser.
-
-The page will reload when you make changes.\
-You may also see any lint errors in the console.
-
-### `npm test`
-
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
-
-### `npm run build`
-
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
-
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
-
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
-
-### `npm run eject`
-
-**Note: this is a one-way operation. Once you `eject`, you can't go back!**
-
-If you aren't satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
-
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you're on your own.
-
-You don't have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn't feel obligated to use this feature. However we understand that this tool wouldn't be useful if you couldn't customize it when you are ready for it.
-
-## Learn More
-
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
-
-To learn React, check out the [React documentation](https://reactjs.org/).
-
-### Code Splitting
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/code-splitting](https://facebook.github.io/create-react-app/docs/code-splitting)
-
-### Analyzing the Bundle Size
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size](https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size)
-
-### Making a Progressive Web App
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app](https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app)
-
-### Advanced Configuration
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/advanced-configuration](https://facebook.github.io/create-react-app/docs/advanced-configuration)
-
-### Deployment
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/deployment](https://facebook.github.io/create-react-app/docs/deployment)
-
-### `npm run build` fails to minify
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
+- [Presentation](https://www.canva.com/design/DAFEOS1A55I/vKGGl3gSQ2HszYM9dtrZiQ/view?utm_content=DAFEOS1A55I&utm_campaign=designshare&utm_medium=link&utm_source=publishsharelink) <br>
+- [Documentation](https://zenith-fno.notion.site/Zenith-5c7fb1f8477141aebbe3c8b4bab87956) <br>
+- [Live Demo](https://zenithprotocol.tez.page/) <br>
+- [Demo Video](https://youtu.be/hbeEyglSOdQ) <br>
+- vUSD Token Address [KT19mcZ91i9Uq711ghZWgk2JAtrfm8s8vxU2](https://ghostnet.tzkt.io/KT19mcZ91i9Uq711ghZWgk2JAtrfm8s8vxU2/operations/) <br>
+- VMM Contract Address [KT1CkJSoxa8Wm9fD2RSkfnpsEZch55jKB3Nj](https://ghostnet.tzkt.io/KT1CkJSoxa8Wm9fD2RSkfnpsEZch55jKB3Nj/operations/) <br>
